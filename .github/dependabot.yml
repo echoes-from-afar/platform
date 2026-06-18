@@ -1,0 +1,44 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    reviewers:
+      - "hotthoughts"
+    groups:
+      nextjs:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      three:
+        patterns:
+          - "three"
+          - "@react-three/*"
+          - "@types/three"
+          - "three-stdlib"
+      dev-tooling:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@eslint/*"
+          - "prettier"
+          - "typescript"
+          - "@types/node"
+          - "tailwindcss"
+          - "@tailwindcss/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    reviewers:
+      - "hotthoughts"
