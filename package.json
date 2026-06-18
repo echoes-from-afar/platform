@@ -17,7 +17,7 @@
     "register:stories": "node scripts/register-existing-stories.mjs"
   },
   "dependencies": {
-    "@chenglou/pretext": "^0.0.6",
+    "@chenglou/pretext": "^0.0.8",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.3.0",
     "gray-matter": "^4.0.3",
