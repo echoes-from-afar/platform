@@ -77,18 +77,22 @@ function getCameraConfig(viewportWidth: number) {
 
 function ResponsiveCamera({ viewportWidth }: { viewportWidth: number }) {
   const { camera } = useThree();
+  const cameraRef = useRef(camera);
   const config = getCameraConfig(viewportWidth);
+  const [posX, posY, posZ] = config.position;
+  const fov = config.fov;
 
   useEffect(() => {
-    const [x, y, z] = config.position;
-    camera.position.set(x, y, z);
+    cameraRef.current = camera;
+    const cam = cameraRef.current;
+    cam.position.set(posX, posY, posZ);
 
-    if (camera instanceof THREE.PerspectiveCamera) {
-      camera.fov = config.fov;
+    if (cam instanceof THREE.PerspectiveCamera) {
+      cam.fov = fov;
     }
 
-    camera.updateProjectionMatrix();
-  }, [camera, config.position[2], config.fov]);
+    cam.updateProjectionMatrix();
+  }, [camera, posX, posY, posZ, fov]);
 
   return null;
 }

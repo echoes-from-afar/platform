@@ -333,12 +333,12 @@ export function HomepageHero({ stories }: HomepageHeroProps) {
   const [, setSceneCanvas] = useState<HTMLCanvasElement | null>(null);
   const [homeWordmarkCanvas, setHomeWordmarkCanvas] =
     useState<HTMLCanvasElement | null>(null);
-  const [languageByNode, setLanguageByNode] = useState<HomeGraphLanguageMap>(
-    {},
-  );
   const [wordmarkFontSize, setWordmarkFontSize] = useState<number | null>(null);
   const wordmarkRef = useRef<HTMLDivElement>(null);
 
+  const [languageByNode, setLanguageByNode] = useState<HomeGraphLanguageMap>(
+    {},
+  );
   const graph = useMemo(() => buildHomeGraph(stories), [stories]);
   const scene = useMemo(
     () => createHomeGraphScene(graph, languageByNode),
@@ -361,7 +361,17 @@ export function HomepageHero({ stories }: HomepageHeroProps) {
   }, [graph.nodes, stories]);
 
   useEffect(() => {
-    setView(isWebGLSupported() ? "3d" : "fallback");
+    let cancelled = false;
+    requestAnimationFrame(() => {
+      if (!cancelled) {
+        startTransition(() => {
+          setView(isWebGLSupported() ? "3d" : "fallback");
+        });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const glassRenderer = useGlassCapability({
@@ -371,14 +381,18 @@ export function HomepageHero({ stories }: HomepageHeroProps) {
 
   useEffect(() => {
     if (view !== "3d") {
-      setSceneReady(false);
+      startTransition(() => {
+        setSceneReady(false);
+      });
     }
   }, [view]);
 
   useEffect(() => {
     const initialLanguageByNode = createHomeGraphNodeLanguageMap(graph.nodes);
 
-    setLanguageByNode(initialLanguageByNode);
+    startTransition(() => {
+      setLanguageByNode(initialLanguageByNode);
+    });
 
     const timeoutIds = graph.nodes.map((node) => {
       let timeoutId = 0;
