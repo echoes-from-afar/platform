@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import Image from "next/image";
 
 import { AboutGlassSourceCanvas } from "@/components/glass/AboutGlassSourceCanvas";
 import { SampledGlassLens } from "@/components/glass/SampledGlassLens";
@@ -320,11 +321,11 @@ export default function AboutPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <img
+                    <Image
                       className={styles.contactInstagramIcon}
                       src="/instagram.svg"
-                      width="16"
-                      height="16"
+                      width={16}
+                      height={16}
                       alt=""
                       aria-hidden="true"
                     />

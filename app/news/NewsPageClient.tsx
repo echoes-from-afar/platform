@@ -110,13 +110,14 @@ export default function NewsPageClient({ newsYear }: NewsPageClientProps) {
     null,
   );
   const [isPosterLightboxOpen, setIsPosterLightboxOpen] = useState(false);
-  const [lightboxAspectRatio, setLightboxAspectRatio] = useState(
-    NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO,
+  const [measuredAspectRatio, setMeasuredAspectRatio] = useState<number | null>(
+    null,
   );
 
   function handleMonthClick(monthData: NewsMonth) {
     if (monthData.month !== activeMonth) {
       setExpandedEvent(null);
+      setIsPosterLightboxOpen(false);
     }
 
     setActiveMonth(monthData.month);
@@ -132,6 +133,7 @@ export default function NewsPageClient({ newsYear }: NewsPageClientProps) {
   }
 
   function handleEventClick(month: number, index: number) {
+    setIsPosterLightboxOpen(false);
     setActiveMonth(month);
     setSelectedEventIndexByMonth((previous) => ({
       ...previous,
@@ -215,8 +217,6 @@ export default function NewsPageClient({ newsYear }: NewsPageClientProps) {
       posterAvoidanceFrameRef.current = null;
     }
 
-    setIsPosterLightboxOpen(false);
-
     const poster = activeDetailPosterRef.current;
     if (!poster) {
       return;
@@ -261,7 +261,6 @@ export default function NewsPageClient({ newsYear }: NewsPageClientProps) {
   useEffect(() => {
     const posterImage = expandedDetailEvent?.posterImage;
     if (!posterImage) {
-      setLightboxAspectRatio(NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO);
       return;
     }
 
@@ -275,16 +274,16 @@ export default function NewsPageClient({ newsYear }: NewsPageClientProps) {
 
       const { naturalWidth, naturalHeight } = posterProbe;
       if (naturalWidth > 0 && naturalHeight > 0) {
-        setLightboxAspectRatio(naturalWidth / naturalHeight);
+        setMeasuredAspectRatio(naturalWidth / naturalHeight);
         return;
       }
 
-      setLightboxAspectRatio(NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO);
+      setMeasuredAspectRatio(NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO);
     };
 
     posterProbe.onerror = () => {
       if (!isCancelled) {
-        setLightboxAspectRatio(NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO);
+        setMeasuredAspectRatio(NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO);
       }
     };
 
@@ -296,6 +295,11 @@ export default function NewsPageClient({ newsYear }: NewsPageClientProps) {
       posterProbe.onerror = null;
     };
   }, [expandedDetailEvent?.posterImage]);
+
+  const lightboxAspectRatio =
+    expandedDetailEvent?.posterImage && measuredAspectRatio !== null
+      ? measuredAspectRatio
+      : NEWS_LIGHTBOX_FALLBACK_ASPECT_RATIO;
 
   const monthGridTemplate = useMemo(() => {
     if (expandedMonth === null) {

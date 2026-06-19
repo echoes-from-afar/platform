@@ -68,7 +68,7 @@ export function StorySpaceClient({
   initialView = "sentence",
 }: StorySpaceClientProps) {
   const [view, setView] = useState<StorySpaceView>(initialView);
-  const [webglError, setWebglError] = useState(false);
+  const [webglSupported, setWebglSupported] = useState(true);
   const router = useRouter();
 
   // Lifted state for sharing between 3D and 2D views
@@ -81,31 +81,46 @@ export function StorySpaceClient({
     intensity: 0.7,
   });
 
-  // Check WebGL support
+  // Resolve view from URL params — deferred to client-only to avoid hydration mismatch
   useEffect(() => {
-    if (view === "3d" && !isWebGLSupported()) {
-      console.error("WebGL not supported, falling back to list view");
-      setWebglError(true);
-      setView("fallback");
-    }
-  }, [view]);
+    let cancelled = false;
+    requestAnimationFrame(() => {
+      if (cancelled) return;
 
+      const params = new URLSearchParams(window.location.search);
+      const requestedView = params.get("view");
+      if (
+        requestedView === "sentence" ||
+        requestedView === "3d" ||
+        requestedView === "2d-list"
+      ) {
+        setView(requestedView);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Check WebGL support — deferred to client-only; propagate to view state
   useEffect(() => {
-    if (initialView === "2d-list") {
-      setView("2d-list");
-      return;
-    }
+    let cancelled = false;
+    requestAnimationFrame(() => {
+      if (cancelled) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const requestedView = params.get("view");
-    if (
-      requestedView === "sentence" ||
-      requestedView === "3d" ||
-      requestedView === "2d-list"
-    ) {
-      setView(requestedView);
-    }
-  }, [initialView]);
+      const supported = isWebGLSupported();
+      setWebglSupported(supported);
+      if (!supported) {
+        setView((prev) => (prev === "3d" ? "fallback" : prev));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const effectiveView: StorySpaceView =
+    view === "3d" && !webglSupported ? "fallback" : view;
 
   const handleEnter3DSpace = (filter?: Partial<FilterState>) => {
     // Initialize filter state from sentence navigation
@@ -122,7 +137,8 @@ export function StorySpaceClient({
   };
 
   const handleStoryClick = (slug: string) => {
-    const returnView = view === "fallback" ? initialView : view;
+    const returnView =
+      effectiveView === "fallback" ? initialView : effectiveView;
     router.push(`/stories/${slug}?from=${encodeURIComponent(returnView)}`);
   };
 
@@ -132,7 +148,7 @@ export function StorySpaceClient({
     });
   }, [fullStories, router]);
 
-  if (view === "sentence") {
+  if (effectiveView === "sentence") {
     return (
       <>
         <HomeBackWaveButton />
@@ -144,20 +160,23 @@ export function StorySpaceClient({
     );
   }
 
-  if (view === "fallback" || webglError) {
+  if (effectiveView === "fallback") {
     return (
       <>
         <HomeBackWaveButton />
         <FallbackView
           stories={stories}
           onStoryClick={handleStoryClick}
-          onBackTo3D={() => setView("3d")}
+          onBackTo3D={() => {
+            setWebglSupported(isWebGLSupported());
+            setView("3d");
+          }}
         />
       </>
     );
   }
 
-  if (view === "2d-list") {
+  if (effectiveView === "2d-list") {
     return (
       <div style={lightArchiveThemeVars}>
         <HomeBackWaveButton />
