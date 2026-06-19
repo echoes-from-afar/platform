@@ -166,18 +166,16 @@ export function Story2DView({ stories, onStoryClick }: Story2DViewProps) {
     [filteredStories],
   );
 
-  useEffect(() => {
-    if (filteredStories.length === 0) {
-      setActiveSlug(null);
-      return;
-    }
+  const effectiveSlug =
+    filteredStories.length === 0
+      ? null
+      : activeSlug && storyBySlug.has(activeSlug)
+        ? activeSlug
+        : filteredStories[0].metadata.slug;
 
-    if (!activeSlug || !storyBySlug.has(activeSlug)) {
-      setActiveSlug(filteredStories[0].metadata.slug);
-    }
-  }, [activeSlug, filteredStories, storyBySlug]);
-
-  const activeStory = activeSlug ? (storyBySlug.get(activeSlug) ?? null) : null;
+  const activeStory = effectiveSlug
+    ? (storyBySlug.get(effectiveSlug) ?? null)
+    : null;
   const posterLines = createPosterLines(
     activeStory?.metadata.posterShortText ?? activeStory?.metadata.title,
   );
@@ -187,8 +185,11 @@ export function Story2DView({ stories, onStoryClick }: Story2DViewProps) {
     3.5 / Math.max(posterLines.length, 1),
   );
   const activeStoryImage = useMemo(
-    () => getPrimaryStoryImage(activeStory),
-    [activeStory],
+    () =>
+      effectiveSlug
+        ? getPrimaryStoryImage(storyBySlug.get(effectiveSlug) ?? null)
+        : null,
+    [effectiveSlug, storyBySlug],
   );
 
   const pageBackground = "#ffffff";
@@ -498,7 +499,7 @@ export function Story2DView({ stories, onStoryClick }: Story2DViewProps) {
                 </div>
               ) : (
                 rows.map((row) => {
-                  const isActive = row.slug === activeSlug;
+                  const isActive = row.slug === effectiveSlug;
 
                   return (
                     <button
