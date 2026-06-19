@@ -21,7 +21,7 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "gray-matter": "^4.0.3",
-    "next": "15.5.4",
+    "next": "16.2.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "three": "^0.184.0"
@@ -34,7 +34,7 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.184.1",
     "eslint": "^9.37.0",
-    "eslint-config-next": "^15.5.4",
+    "eslint-config-next": "^16.2.9",
     "prettier": "^3.8.1",
     "tailwindcss": "^4",
     "three-stdlib": "^2.36.1",
