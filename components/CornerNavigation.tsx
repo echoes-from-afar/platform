@@ -58,7 +58,15 @@ export function CornerNavigation({ current, layout }: CornerNavigationProps) {
   const textureFilterId = useId().replaceAll(":", "");
 
   useEffect(() => {
-    setLanguageByRoute(createCornerNavigationLanguageMap(cornerRouteOrder));
+    let cancelled = false;
+    requestAnimationFrame(() => {
+      if (!cancelled) {
+        setLanguageByRoute(createCornerNavigationLanguageMap(cornerRouteOrder));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
