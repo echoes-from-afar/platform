@@ -24,7 +24,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "next": "16.2.9",
-    "three": "^0.185.0"
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -32,7 +32,7 @@
     "@types/node": "^26",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/three": "^0.184.1",
+    "@types/three": "^0.185.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.9",
     "prettier": "^3.8.4",
