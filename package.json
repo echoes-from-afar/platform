@@ -33,12 +33,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.185.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.6.0",
     "eslint-config-next": "^16.2.10",
     "prettier": "^3.9.4",
     "tailwindcss": "^4",
     "three-stdlib": "^2.36.1",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "license": "MIT"
 }
