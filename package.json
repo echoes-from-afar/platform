@@ -35,7 +35,7 @@
     "@types/three": "^0.185.1",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.10",
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.5",
     "tailwindcss": "^4",
     "three-stdlib": "^2.36.1",
     "typescript": "^6.0.3"
