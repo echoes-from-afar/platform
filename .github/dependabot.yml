@@ -32,6 +32,11 @@ updates:
           - "@types/node"
           - "tailwindcss"
           - "@tailwindcss/*"
+        ignore:
+          - dependency-name: "eslint"
+            versions: [">=10"]
+          - dependency-name: "typescript"
+            versions: [">=7"]
 
   - package-ecosystem: github-actions
     directory: /
