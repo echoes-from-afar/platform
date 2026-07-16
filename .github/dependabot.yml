@@ -6,40 +6,19 @@ updates:
       interval: weekly
     open-pull-requests-limit: 10
     groups:
-      nextjs:
+      all-deps:
         patterns:
-          - "next"
-          - "eslint-config-next"
-      react:
-        patterns:
-          - "react"
-          - "react-dom"
-          - "@types/react"
-          - "@types/react-dom"
-      three:
-        patterns:
-          - "three"
-          - "@react-three/*"
-          - "@types/three"
-          - "three-stdlib"
-      dev-tooling:
-        patterns:
-          - "eslint"
-          - "eslint-*"
-          - "@eslint/*"
-          - "prettier"
-          - "typescript"
-          - "@types/node"
-          - "tailwindcss"
-          - "@tailwindcss/*"
-        ignore:
-          - dependency-name: "eslint"
-            versions: [">=10"]
-          - dependency-name: "typescript"
-            versions: [">=7"]
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
