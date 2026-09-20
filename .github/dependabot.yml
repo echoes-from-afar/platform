@@ -12,6 +12,22 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # react 19.3+ exceeds @react-three/fiber's peer range (react >=19 <19.3).
+      # Remove once @react-three/fiber widens it.
+      - dependency-name: react
+        versions: [">= 19.3.0"]
+      - dependency-name: react-dom
+        versions: [">= 19.3.0"]
+      # eslint 10+ unsupported by eslint-config-next's bundled plugins
+      # (eslint-plugin-react / -jsx-a11y / -import all peer eslint <=9).
+      # Remove once eslint-config-next ships ESLint 10 support.
+      - dependency-name: eslint
+        versions: [">= 10.0.0"]
+      # TypeScript 7 unsupported by typescript-eslint (peer >=4.8.4 <6.1.0).
+      # Remove once typescript-eslint widens its range.
+      - dependency-name: typescript
+        versions: [">= 7.0.0"]
 
   - package-ecosystem: github-actions
     directory: /
